@@ -1,6 +1,9 @@
+uuid: 6fbb58fc-062b-49e5-8f7d-0dfe06f4c87b
 langcode: en
 status: true
 dependencies: {  }
+_core:
+  default_config_hash: btW6TFHajhy7Eo6YUvdFiPh4TcPggo8GBXYctjV6zag
 id: authenticated
 label: 'Authenticated user'
 weight: 1
@@ -10,6 +13,7 @@ permissions:
   - 'access content'
   - 'access shortcuts'
   - 'access site-wide contact form'
+  - 'opt-in or out of google analytics tracking'
   - 'post comments'
   - 'search content'
   - 'skip comment approval'
