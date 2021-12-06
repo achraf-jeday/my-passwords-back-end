@@ -97,7 +97,8 @@
     },
     "require-dev": {
         "drupal/config_partial_export": "^1.6",
+        "drupal/console": "~1.0",
         "drupal/devel": "^4.1",
-        "drush/drush": "^10.6"
+        "drush/drush": "8.x"
     }
 }
