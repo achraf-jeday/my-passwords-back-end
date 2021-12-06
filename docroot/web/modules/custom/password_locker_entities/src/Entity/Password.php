@@ -188,7 +188,8 @@ class Password extends ContentEntityBase implements PasswordInterface {
       ->setDisplayOptions('form', [
         'type' => 'boolean_checkbox',
         'weight' => -3,
-      ]);
+      ])
+      ->setDefaultValue(0);
 
     $fields['created'] = BaseFieldDefinition::create('created')
       ->setLabel(t('Created'))
