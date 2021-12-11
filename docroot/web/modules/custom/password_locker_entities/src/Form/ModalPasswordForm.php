@@ -4,6 +4,7 @@ namespace Drupal\password_locker_entities\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\password_locker_entities\Entity\Password;
 
 /**
  * Class ModalPasswordForm.
@@ -29,7 +30,7 @@ class ModalPasswordForm extends FormBase {
       '#size' => 64,
       '#weight' => '0',
     ];
-    $form['user_id'] = [
+    $form['field_user_id'] = [
       '#type' => 'textfield',
       '#title' => $this->t('User ID'),
       '#description' => $this->t('User account identifier.'),
@@ -37,7 +38,7 @@ class ModalPasswordForm extends FormBase {
       '#size' => 64,
       '#weight' => '0',
     ];
-    $form['password'] = [
+    $form['field_password'] = [
       '#type' => 'password',
       '#title' => $this->t('Password'),
       '#description' => $this->t('User account password.'),
@@ -45,19 +46,19 @@ class ModalPasswordForm extends FormBase {
       '#size' => 64,
       '#weight' => '0',
     ];
-    $form['link'] = [
+    $form['field_link'] = [
       '#type' => 'url',
       '#title' => $this->t('Link'),
       '#description' => $this->t('Link to application or login page.'),
       '#weight' => '0',
     ];
-    $form['email'] = [
+    $form['field_email'] = [
       '#type' => 'email',
       '#title' => $this->t('Email'),
       '#description' => $this->t('Email used with the user account.'),
       '#weight' => '0',
     ];
-    $form['notes'] = [
+    $form['field_notes'] = [
       '#type' => 'textarea',
       '#title' => $this->t('Notes'),
       '#description' => $this->t('Notes about the user account.'),
@@ -85,10 +86,20 @@ class ModalPasswordForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    // Display result.
+    $values = [];
     foreach ($form_state->getValues() as $key => $value) {
-      \Drupal::messenger()->addMessage($key . ': ' . ($key === 'text_format'?$value['value']:$value));
+      $values[$key] = $value;
     }
+    $password = Password::create([
+      'name'           => $values['name'],
+      'field_user_id'  => $values['field_user_id'],
+      'field_password' => $values['field_password'],
+      'field_link'     => $values['field_link'],
+      'field_email'    => $values['field_email'],
+      'field_notes'    => $values['field_notes'],
+    ]);
+    $password->save();
+    \Drupal::messenger()->addMessage('Password created successfully.');
   }
 
 }
