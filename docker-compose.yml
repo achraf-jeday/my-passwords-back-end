@@ -47,7 +47,6 @@ services:
 #    container_name: certbot
 #    volumes:
 #      - certbot-etc:/etc/letsencrypt
-#      - drupal-data:/var/www/html
 #    command: certonly --webroot --webroot-path=/var/www/html --email achraf.jday@gmail.com --agree-tos --no-eff-email --force-renewal -d passwordlocker.me -d www.passwordlocker.me
 
 networks:
@@ -57,6 +56,5 @@ networks:
     driver: bridge
 
 volumes:
-#  drupal-data:
   db-data:
   certbot-etc:
