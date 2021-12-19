@@ -7,9 +7,9 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\password_locker_entities\Entity\Password;
 
 /**
- * Class ModalPasswordForm.
+ * Class AddPasswordForm.
  */
-class ModalPasswordForm extends FormBase {
+class AddPasswordForm extends FormBase {
 
   /**
    * {@inheritdoc}
@@ -22,6 +22,8 @@ class ModalPasswordForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
+    $form['#prefix'] = '<div id="my-form-wrapper-id">';
+    $form['#suffix'] = '</div>';
     $form['name'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Name'),
@@ -67,6 +69,22 @@ class ModalPasswordForm extends FormBase {
     $form['submit'] = [
       '#type' => 'submit',
       '#value' => $this->t('Submit'),
+      '#attributes' => [
+          'class' => [
+              'btn',
+              'btn-md',
+              'btn-primary',
+              'use-ajax-submit'
+          ]
+      ],
+      '#ajax' => [
+          'wrapper' => 'my-form-wrapper-id',
+          'progress' => ['type' => 'none'],
+      ]
+    ];
+
+    $form['actions']['submit']['#ajax']['progress'] = [
+      'type' => 'none',
     ];
 
     return $form;
