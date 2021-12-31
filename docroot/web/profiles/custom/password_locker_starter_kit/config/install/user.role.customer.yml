@@ -1,0 +1,13 @@
+langcode: en
+status: true
+dependencies: {  }
+id: customer
+label: Customer
+weight: 3
+is_admin: null
+permissions:
+  - 'add password entities'
+  - 'delete password entities'
+  - 'edit password entities'
+  - 'view published password entities'
+  - 'view unpublished password entities'

@@ -19,17 +19,22 @@
         "drupal/adminimal_admin_toolbar": "^1.11",
         "drupal/adminimal_theme": "^1.6",
         "drupal/codesnippet": "^1.7",
+        "drupal/consumers": "^1.11",
         "drupal/core-composer-scaffold": "^9.2",
         "drupal/core-project-message": "^9.2",
         "drupal/core-recommended": "^9.2",
         "drupal/google_analytics": "^4.0",
         "drupal/hreflang": "^1.5",
+        "drupal/jsonapi_extras": "^3.20",
         "drupal/metatag": "^1.16",
+        "drupal/paragraphs": "^1.12",
         "drupal/pathauto": "^1.8",
         "drupal/redirect": "^1.6",
         "drupal/schema_metatag": "^2.2",
         "drupal/seo_checklist": "^5.1",
-        "drupal/simple_sitemap": "^4.0"
+        "drupal/simple_oauth": "^5.0",
+        "drupal/simple_sitemap": "^4.0",
+        "drupal/subrequests": "^3.0"
     },
     "conflict": {
         "drupal/drupal": "*"
