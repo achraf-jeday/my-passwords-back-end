@@ -3,7 +3,7 @@ version: "3"
 services:
   mysql:
     image: mysql:8.0
-    container_name: mysql
+    container_name: ${PROJECT_NAME}-mysql
     command: --default-authentication-plugin=mysql_native_password --max_allowed_packet=524288000
     restart: unless-stopped
     env_file: .env
@@ -14,20 +14,19 @@ services:
 
   drupal:
     build: .
-    container_name: drupal
+    container_name: ${PROJECT_NAME}-drupal
     depends_on:
       - mysql
     restart: unless-stopped
     networks:
       - internal
-      - external
     volumes:
       - ./docroot:/var/www/html
       - ./config:/home/config
 
   webserver:
     image: nginx:1.17.4-alpine
-    container_name: webserver
+    container_name: ${PROJECT_NAME}-webserver
     depends_on:
       - drupal
     restart: unless-stopped
@@ -38,21 +37,29 @@ services:
       - ./nginx-conf:/etc/nginx/conf.d
       - certbot-etc:/etc/letsencrypt
     networks:
-      - external
+      - internal
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: ${PROJECT_NAME}-mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    restart: unless-stopped
+    networks:
+      - internal
 
 #  certbot:
 #    depends_on:
 #      - webserver
 #    image: certbot/certbot
-#    container_name: certbot
+#    container_name: ${PROJECT_NAME}-certbot
 #    volumes:
 #      - certbot-etc:/etc/letsencrypt
 #      - ./docroot:/var/www/html
 #    command: certonly --webroot --webroot-path=/var/www/html --email achraf.jday@gmail.com --agree-tos --no-eff-email --force-renewal -d passwordlocker.me -d www.passwordlocker.me
 
 networks:
-  external:
-    driver: bridge
   internal:
     driver: bridge
 
