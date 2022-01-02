@@ -1,6 +1,19 @@
 # from https://www.drupal.org/docs/system-requirements/php-requirements
 FROM php:7.4-fpm-alpine3.14
 
+RUN \
+  # Update APK package list.
+  apk update \
+  \
+  # Install git and zip used by composer when fetching dependencies.
+  && apk add git unzip \
+  \
+  # Install bash.
+  && apk add bash \
+  \
+  # Install patch utility that may be usefull to patch dependencies.
+  && apk add patch
+
 # install the PHP extensions we need
 RUN set -eux; \
 	\

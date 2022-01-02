@@ -16,10 +16,12 @@
     ],
     "require": {
         "composer/installers": "^1.9",
+        "cweagans/composer-patches": "^1.7",
         "drupal/adminimal_admin_toolbar": "^1.11",
         "drupal/adminimal_theme": "^1.6",
         "drupal/codesnippet": "^1.7",
         "drupal/consumers": "^1.11",
+        "drupal/core": "^9.3",
         "drupal/core-composer-scaffold": "^9.2",
         "drupal/core-project-message": "^9.2",
         "drupal/core-recommended": "^9.2",
@@ -30,6 +32,7 @@
         "drupal/paragraphs": "^1.12",
         "drupal/pathauto": "^1.8",
         "drupal/redirect": "^1.6",
+        "drupal/restui": "^1.20",
         "drupal/schema_metatag": "^2.2",
         "drupal/seo_checklist": "^5.1",
         "drupal/simple_oauth": "^5.0",
@@ -42,7 +45,13 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "composer/installers": true,
+            "drupal/console-extend-plugin": true,
+            "drupal/core-composer-scaffold": true,
+            "cweagans/composer-patches": true
+        }
     },
     "extra": {
         "drupal-scaffold": {
@@ -79,26 +88,11 @@
                 "type:drupal-custom-theme"
             ]
         },
-        "drupal-core-project-message": {
-            "include-keys": [
-                "homepage",
-                "support"
-            ],
-            "post-create-project-cmd-message": [
-                "<bg=blue;fg=white>                                                         </>",
-                "<bg=blue;fg=white>  Congratulations, you’ve installed the Drupal codebase  </>",
-                "<bg=blue;fg=white>  from the drupal/recommended-project template!          </>",
-                "<bg=blue;fg=white>                                                         </>",
-                "",
-                "<bg=yellow;fg=black>Next steps</>:",
-                "  * Install the site: https://www.drupal.org/docs/8/install",
-                "  * Read the user guide: https://www.drupal.org/docs/user_guide/en/index.html",
-                "  * Get support: https://www.drupal.org/support",
-                "  * Get involved with the Drupal community:",
-                "      https://www.drupal.org/getting-involved",
-                "  * Remove the plugin that prints this message:",
-                "      composer remove drupal/core-project-message"
-            ]
+        "enable-patching": true,
+        "patches": {
+            "drupal/core": {
+                "User created via /user/register?_format=json get blocked": "https://www.drupal.org/files/issues/2019-10-24/drupal-3055807-user_registered-via-rest-get-blocked-7.patch"
+            }
         }
     },
     "require-dev": {
