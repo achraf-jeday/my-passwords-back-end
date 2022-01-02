@@ -23,7 +23,6 @@
         "drupal/consumers": "^1.11",
         "drupal/core": "^9.3",
         "drupal/core-composer-scaffold": "^9.2",
-        "drupal/core-project-message": "^9.2",
         "drupal/core-recommended": "^9.2",
         "drupal/google_analytics": "^4.0",
         "drupal/hreflang": "^1.5",
