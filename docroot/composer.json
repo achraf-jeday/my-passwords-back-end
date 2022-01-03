@@ -31,6 +31,7 @@
         "drupal/paragraphs": "^1.12",
         "drupal/pathauto": "^1.8",
         "drupal/redirect": "^1.6",
+        "drupal/rest_password": "^8.1",
         "drupal/restui": "^1.20",
         "drupal/schema_metatag": "^2.2",
         "drupal/seo_checklist": "^5.1",
@@ -91,6 +92,9 @@
         "patches": {
             "drupal/core": {
                 "User created via /user/register?_format=json get blocked": "https://www.drupal.org/files/issues/2019-10-24/drupal-3055807-user_registered-via-rest-get-blocked-7.patch"
+            },
+            "drupal/rest_password": {
+                "Possible email enumeration vulnerability": "https://www.drupal.org/files/issues/2021-12-12/rest_password-3223629-4.patch"
             }
         }
     },
