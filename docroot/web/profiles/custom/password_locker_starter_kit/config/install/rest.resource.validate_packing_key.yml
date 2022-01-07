@@ -1,0 +1,17 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - password_locker_rest
+    - serialization
+    - simple_oauth
+id: validate_packing_key
+plugin_id: validate_packing_key
+granularity: resource
+configuration:
+  methods:
+    - POST
+  formats:
+    - json
+  authentication:
+    - oauth2

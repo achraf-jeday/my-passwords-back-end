@@ -3,6 +3,7 @@ status: true
 dependencies:
   config:
     - core.entity_view_mode.user.compact
+    - field.field.user.user.field_packing_key
     - field.field.user.user.user_picture
   module:
     - image
@@ -14,12 +15,13 @@ mode: compact
 content:
   user_picture:
     type: image
+    label: hidden
+    settings:
+      image_link: ''
+      image_style: ''
+    third_party_settings: {  }
     weight: 0
     region: content
-    settings:
-      image_style: ''
-      image_link: ''
-    third_party_settings: {  }
-    label: hidden
 hidden:
+  field_packing_key: true
   member_for: true

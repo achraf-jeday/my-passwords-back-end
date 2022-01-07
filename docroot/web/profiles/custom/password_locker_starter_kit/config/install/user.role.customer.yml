@@ -1,6 +1,11 @@
 langcode: en
 status: true
-dependencies: {  }
+dependencies:
+  config:
+    - rest.resource.validate_packing_key
+  module:
+    - password_locker_entities
+    - rest
 id: customer
 label: Customer
 weight: 3
@@ -9,5 +14,6 @@ permissions:
   - 'add password entities'
   - 'delete password entities'
   - 'edit password entities'
+  - 'restful post validate_packing_key'
   - 'view published password entities'
   - 'view unpublished password entities'
