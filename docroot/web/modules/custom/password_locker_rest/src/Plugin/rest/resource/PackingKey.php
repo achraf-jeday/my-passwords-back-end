@@ -5,6 +5,7 @@ namespace Drupal\password_locker_rest\Plugin\rest\resource;
 use Drupal\rest\Plugin\ResourceBase;
 use Drupal\rest\ResourceResponse;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Password\PasswordInterface;
 use Drupal\Core\Session\AccountProxyInterface;
 use Psr\Log\LoggerInterface;
 use Drupal\user\UserStorageInterface;
@@ -22,6 +23,13 @@ use Drupal\user\UserStorageInterface;
  * )
  */
 class PackingKey extends ResourceBase {
+
+  /**
+   * The password hash service.
+   *
+   * @var \Drupal\Core\Password\PasswordInterface
+   */
+  protected $passwordHasher;
 
   /**
    * A current user instance.
@@ -59,9 +67,11 @@ class PackingKey extends ResourceBase {
     $plugin_definition,
     array $serializer_formats,
     LoggerInterface $logger,
+    PasswordInterface $password_hasher,
     AccountProxyInterface $current_user,
     UserStorageInterface $user_storage) {
     parent::__construct($configuration, $plugin_id, $plugin_definition, $serializer_formats, $logger);
+    $this->passwordHasher = $password_hasher;
     $this->currentUser = $current_user;
     $this->userStorage = $user_storage;
     $this->logger = $logger;
@@ -77,6 +87,7 @@ class PackingKey extends ResourceBase {
       $plugin_definition,
       $container->getParameter('serializer.formats'),
       $container->get('logger.factory')->get('password_locker_rest'),
+      $container->get('password'),
       $container->get('current_user'),
       $container->get('entity_type.manager')->getStorage('user')
     );
@@ -127,19 +138,66 @@ class PackingKey extends ResourceBase {
    */
   public function patch(array $data) {
 
-    if(!empty($data['packing_key'])) {
+    if(!empty($data['packing_key']['value'])) {
       $uid = $this->currentUser->id();
-      $user = \Drupal\user\Entity\User::load($uid);
-      $user->set('field_packing_key', $data['packing_key']);
-      $user->save();
-      $this->logger->notice("Packing key of user '%name' updated successfully.",
-        [
-          '%name' => $this->currentUser->getAccountName()
-        ]
-      );
-      $message_ok = $this->t('Packing key updated successfully.');
-      $response = ['message' => $message_ok];
-      $code = 200;
+      $currentUser = \Drupal\user\Entity\User::load($uid);
+      $field_packing_key = $currentUser->field_packing_key->value;
+      if(!empty($data['packing_key']['existing'])) {
+        if(!empty($field_packing_key)) {
+          $success = $this->passwordHasher->check($data['packing_key']['existing'], $field_packing_key);
+          if($success) {
+            $new_hashed = $this->passwordHasher->hash($data['packing_key']['value']);
+            $currentUser->set('field_packing_key', $new_hashed);
+            $currentUser->save();
+            $this->logger->notice("Packing key of user '%name' updated successfully.",
+              [
+                '%name' => $this->currentUser->getAccountName()
+              ]
+            );
+            $message_ok = $this->t('Packing key updated successfully.');
+            $response = ['message' => $message_ok];
+            $code = 200;
+          }
+          else {
+            $this->logger->notice("Unsuccessful update attempt: incorrect packing key.");
+            $response = ['message' => $this->t("Incorrect packing key!")];
+            $code = 401;
+          }
+        }
+        else {
+          $new_hashed = $this->passwordHasher->hash($data['packing_key']['value']);
+          $currentUser->set('field_packing_key', $new_hashed);
+          $currentUser->save();
+          $this->logger->notice("Packing key of user '%name' updated successfully.",
+            [
+              '%name' => $this->currentUser->getAccountName()
+            ]
+          );
+          $message_ok = $this->t('Packing key updated successfully.');
+          $response = ['message' => $message_ok];
+          $code = 200;
+        }
+      }
+      else {
+        if(empty($field_packing_key)) {
+          $new_hashed = $this->passwordHasher->hash($data['packing_key']['value']);
+          $currentUser->set('field_packing_key', $new_hashed);
+          $currentUser->save();
+          $this->logger->notice("Packing key of user '%name' updated successfully.",
+            [
+              '%name' => $this->currentUser->getAccountName()
+            ]
+          );
+          $message_ok = $this->t('Packing key updated successfully.');
+          $response = ['message' => $message_ok];
+          $code = 200;
+        }
+        else {
+          $this->logger->notice("Unsuccessful update attempt: incorrect packing key.");
+          $response = ['message' => $this->t("Incorrect packing key!")];
+          $code = 401;
+        }
+      }
     }
     else {
       $this->logger->notice("Cannot update packing key.");
