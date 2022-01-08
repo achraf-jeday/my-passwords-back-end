@@ -2,7 +2,7 @@ langcode: en
 status: true
 dependencies:
   config:
-    - rest.resource.validate_packing_key
+    - rest.resource.packing_key
   module:
     - password_locker_entities
     - rest
@@ -14,6 +14,7 @@ permissions:
   - 'add password entities'
   - 'delete password entities'
   - 'edit password entities'
-  - 'restful post validate_packing_key'
+  - 'restful patch packing_key'
+  - 'restful post packing_key'
   - 'view published password entities'
   - 'view unpublished password entities'

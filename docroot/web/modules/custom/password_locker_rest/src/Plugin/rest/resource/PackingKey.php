@@ -10,18 +10,18 @@ use Psr\Log\LoggerInterface;
 use Drupal\user\UserStorageInterface;
 
 /**
- * Provides a resource to validate the user packing key.
+ * Provides resources related to the user packing key.
  *
  * @RestResource(
- *   id = "validate_packing_key",
- *   label = @Translation("Validate packing key"),
+ *   id = "packing_key",
+ *   label = @Translation("Packing key"),
  *   uri_paths = {
  *     "canonical" = "/user/packing-key",
  *     "create" = "/user/packing-key"
  *   }
  * )
  */
-class ValidatePackingKey extends ResourceBase {
+class PackingKey extends ResourceBase {
 
   /**
    * A current user instance.
@@ -76,7 +76,7 @@ class ValidatePackingKey extends ResourceBase {
       $plugin_id,
       $plugin_definition,
       $container->getParameter('serializer.formats'),
-      $container->get('logger.factory')->get('rest_password'),
+      $container->get('logger.factory')->get('password_locker_rest'),
       $container->get('current_user'),
       $container->get('entity_type.manager')->getStorage('user')
     );
@@ -112,6 +112,39 @@ class ValidatePackingKey extends ResourceBase {
         $response = ['message' => $this->t("Incorrect packing key!")];
         $code = 401;
       }
+    }
+
+    return new ResourceResponse($response, $code);
+  }
+
+  /**
+   * Responds to PATCH requests.
+   *
+   * @param array $data
+   *
+   * @return \Drupal\rest\ResourceResponse
+   *   The HTTP response object.
+   */
+  public function patch(array $data) {
+
+    if(!empty($data['packing_key'])) {
+      $uid = $this->currentUser->id();
+      $user = \Drupal\user\Entity\User::load($uid);
+      $user->set('field_packing_key', $data['packing_key']);
+      $user->save();
+      $this->logger->notice("Packing key of user '%name' updated successfully.",
+        [
+          '%name' => $this->currentUser->getAccountName()
+        ]
+      );
+      $message_ok = $this->t('Packing key updated successfully.');
+      $response = ['message' => $message_ok];
+      $code = 200;
+    }
+    else {
+      $this->logger->notice("Cannot update packing key.");
+      $response = ['message' => $this->t('Please Patch packing key.')];
+      $code = 400;
     }
 
     return new ResourceResponse($response, $code);
