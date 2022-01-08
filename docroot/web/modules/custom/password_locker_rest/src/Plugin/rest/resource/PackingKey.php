@@ -111,8 +111,8 @@ class PackingKey extends ResourceBase {
       $user_id = $this->currentUser->id();
       $currentUser = \Drupal\user\Entity\User::load($user_id);
       $field_packing_key = $currentUser->field_packing_key->value;
-
-      if($data['packing_key'] === $field_packing_key) {
+      $success = $this->passwordHasher->check($data['packing_key'], $field_packing_key);
+      if($success) {
         $this->logger->notice("Successful login of user '%name'.", ['%name' => $currentUser->name->value]);
         $message_ok = $this->t('Packing key is valid. You can access your accoount now.');
         $response = ['message' => $message_ok];
