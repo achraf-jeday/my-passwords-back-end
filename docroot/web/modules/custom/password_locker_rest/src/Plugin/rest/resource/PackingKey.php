@@ -119,12 +119,12 @@ class PackingKey extends ResourceBase {
         $message_ok = $this->t('Packing key is valid. You can access your account now.');
         $response = ['message' => $message_ok];
         $code = 200;
+        // $session = \Drupal::request()->getSession();
+        // $packing_key = $session->get('password_locker_rest.packing_key');
+        // $session->remove('password_locker_rest.packing_key');
+        // \Drupal::request()->getSession()->clear();
       }
       else {
-        $session = \Drupal::request()->getSession();
-        $packing_key = $session->get('password_locker_rest.packing_key');
-        $session->remove('password_locker_rest.packing_key');
-        \Drupal::request()->getSession()->clear();
         $this->logger->notice("Unsuccessful login attempt: incorrect packing key.");
         $response = ['message' => $this->t("Incorrect packing key!")];
         $code = 401;
