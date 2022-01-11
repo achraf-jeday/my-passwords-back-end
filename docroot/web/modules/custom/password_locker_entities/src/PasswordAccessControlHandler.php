@@ -21,27 +21,33 @@ class PasswordAccessControlHandler extends EntityAccessControlHandler {
     /** @var \Drupal\password_locker_entities\Entity\PasswordInterface $entity */
 
     switch ($operation) {
-
       case 'view':
-
-        if (!$entity->isPublished()) {
-          return AccessResult::allowedIfHasPermission($account, 'view unpublished password entities');
+        $access = AccessResult::allowedIfHasPermission($account, 'view any password entities');
+        if (!$access->isAllowed() && $account->hasPermission('view own password entities')) {
+          $access = $access->orIf(AccessResult::allowedIf($account->id() == $entity->getOwnerId())->cachePerUser()->addCacheableDependency($entity));
         }
-
-
-        return AccessResult::allowedIfHasPermission($account, 'view published password entities');
+        break;
 
       case 'update':
-
-        return AccessResult::allowedIfHasPermission($account, 'edit password entities');
+        $access = AccessResult::allowedIfHasPermission($account, 'edit any password entities');
+        if (!$access->isAllowed() && $account->hasPermission('edit own password entities')) {
+          $access = $access->orIf(AccessResult::allowedIf($account->id() == $entity->getOwnerId())->cachePerUser()->addCacheableDependency($entity));
+        }
+        break;
 
       case 'delete':
+        $access =  AccessResult::allowedIfHasPermission($account, 'delete any password entities');
+        if (!$access->isAllowed() && $account->hasPermission('delete own password entities')) {
+          $access = $access->orIf(AccessResult::allowedIf($account->id() == $entity->getOwnerId())->cachePerUser()->addCacheableDependency($entity));
+        }
+        break;
 
-        return AccessResult::allowedIfHasPermission($account, 'delete password entities');
+      // Unknown operation, no opinion.
+      default:
+        $access = AccessResult::neutral();
     }
 
-    // Unknown operation, no opinion.
-    return AccessResult::neutral();
+    return $access;
   }
 
   /**

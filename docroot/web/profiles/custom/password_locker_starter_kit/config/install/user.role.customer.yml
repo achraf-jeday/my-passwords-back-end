@@ -12,9 +12,8 @@ weight: 3
 is_admin: null
 permissions:
   - 'add password entities'
-  - 'delete password entities'
-  - 'edit password entities'
+  - 'delete own password entities'
+  - 'edit own password entities'
   - 'restful patch packing_key'
   - 'restful post packing_key'
-  - 'view published password entities'
-  - 'view unpublished password entities'
+  - 'view own password entities'
