@@ -1,0 +1,41 @@
+#!/bin/sh
+#
+# Pre-Commit hook script for Drupal 8.x to check your code against PHPCS code sniffer.
+#
+# Requirements:
+#   Drupal 8.x
+#   PHP Code Sniffer (phpcs) with Drupal Coder (https://www.drupal.org/project/coder)
+#
+
+# Setup
+commitfailed=0
+PHPCS_BIN="./vendor/bin/phpcs"
+PHPCBF_BIN="./vendor/bin/phpcbf"
+
+
+drupalfiles=$(git diff --cached --name-only  --diff-filter=ACM HEAD | grep -E '\.php$|\.module$|\.inc$|\.install$|\.test$|\.profile$|\.theme$|\.css$|\.info$|\.txt$|\.md$|\.yml$')
+
+if [ "$drupalfiles" != "" ]
+then
+    drupalfailed=0
+    echo "Running Code Sniffer..."
+    $PHPCS_BIN --standard=Drupal --encoding=utf-8 -n -p $drupalfiles >/dev/null
+    if [ $? != 0 ]
+    then
+        $PHPCBF_BIN --standard=Drupal --encoding=utf-8 -n -p $drupalfiles >/dev/null
+        git add $drupalfiles
+        $PHPCS_BIN --standard=Drupal --encoding=utf-8 -n -p $drupalfiles >/dev/null
+        if [ $? != 0 ]
+        then
+            drupalfailed=1
+        fi
+    fi
+
+    if [ $drupalfailed != 0 ]
+    then
+        echo "PHPCS failed, errors found not fixable automatically, git commit denied!"
+        commitfailed=$drupalfailed
+    fi
+fi
+
+exit $commitfailed

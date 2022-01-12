@@ -51,7 +51,8 @@
             "drupal/console-extend-plugin": true,
             "drupal/core-composer-scaffold": true,
             "cweagans/composer-patches": true
-        }
+        },
+        "process-timeout": 2000
     },
     "extra": {
         "drupal-scaffold": {
@@ -99,9 +100,16 @@
         }
     },
     "require-dev": {
+        "drupal/coder": "^8.3",
         "drupal/config_partial_export": "^1.6",
         "drupal/console": "~1.0",
         "drupal/devel": "^4.1",
-        "drush/drush": "10.x"
+        "drush/drush": "10.x",
+        "squizlabs/php_codesniffer": "*"
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "./scripts/symlink.sh"
+        ]
     }
 }
