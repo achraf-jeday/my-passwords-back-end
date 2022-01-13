@@ -2,6 +2,7 @@
 
 namespace Drupal\password_locker_rest\Plugin\rest\resource;
 
+use Drupal\user\Entity\User;
 use Drupal\rest\Plugin\ResourceBase;
 use Drupal\rest\ResourceResponse;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -58,8 +59,12 @@ class PackingKey extends ResourceBase {
    *   The available serialization formats.
    * @param \Psr\Log\LoggerInterface $logger
    *   A logger instance.
+   * @param \Drupal\Core\Password\PasswordInterface $password_hasher
+   *   A password manager interface.
    * @param \Drupal\Core\Session\AccountProxyInterface $current_user
    *   A current user instance.
+   * @param \Drupal\user\UserStorageInterface $user_storage
+   *   The user storage handler.
    */
   public function __construct(
     array $configuration,
@@ -71,10 +76,10 @@ class PackingKey extends ResourceBase {
     AccountProxyInterface $current_user,
     UserStorageInterface $user_storage) {
     parent::__construct($configuration, $plugin_id, $plugin_definition, $serializer_formats, $logger);
+    $this->logger = $logger;
     $this->passwordHasher = $password_hasher;
     $this->currentUser = $current_user;
     $this->userStorage = $user_storage;
-    $this->logger = $logger;
   }
 
   /**
@@ -97,22 +102,22 @@ class PackingKey extends ResourceBase {
    * Responds to POST requests.
    *
    * @param array $data
+   *   The POST request data.
    *
    * @return \Drupal\rest\ResourceResponse
    *   The HTTP response object.
    */
   public function post(array $data) {
-
     $response = ['message' => $this->t('Please Post packing key.')];
     $code = 400;
 
-    if(!empty($data['packing_key'])) {
+    if (!empty($data['packing_key'])) {
       // Get the packing key of the current user.
       $user_id = $this->currentUser->id();
-      $currentUser = \Drupal\user\Entity\User::load($user_id);
+      $currentUser = User::load($user_id);
       $field_packing_key = $currentUser->field_packing_key->value;
       $success = $this->passwordHasher->check($data['packing_key'], $field_packing_key);
-      if($success) {
+      if ($success) {
         $session = \Drupal::request()->getSession();
         $session->set('password_locker_rest.packing_key', $data['packing_key']);
         $this->logger->notice("Successful login of user '%name'.", ['%name' => $currentUser->name->value]);
@@ -138,20 +143,20 @@ class PackingKey extends ResourceBase {
    * Responds to PATCH requests.
    *
    * @param array $data
+   *   The PATCH request data.
    *
    * @return \Drupal\rest\ResourceResponse
    *   The HTTP response object.
    */
   public function patch(array $data) {
-
-    if(!empty($data['packing_key']['value'])) {
+    if (!empty($data['packing_key']['value'])) {
       $uid = $this->currentUser->id();
-      $currentUser = \Drupal\user\Entity\User::load($uid);
+      $currentUser = User::load($uid);
       $field_packing_key = $currentUser->field_packing_key->value;
-      if(!empty($data['packing_key']['existing'])) {
-        if(!empty($field_packing_key)) {
+      if (!empty($data['packing_key']['existing'])) {
+        if (!empty($field_packing_key)) {
           $success = $this->passwordHasher->check($data['packing_key']['existing'], $field_packing_key);
-          if($success) {
+          if ($success) {
             $new_hashed = $this->passwordHasher->hash($data['packing_key']['value']);
             $currentUser->set('field_packing_key', $new_hashed);
             $currentUser->save();
@@ -185,7 +190,7 @@ class PackingKey extends ResourceBase {
         }
       }
       else {
-        if(empty($field_packing_key)) {
+        if (empty($field_packing_key)) {
           $new_hashed = $this->passwordHasher->hash($data['packing_key']['value']);
           $currentUser->set('field_packing_key', $new_hashed);
           $currentUser->save();
