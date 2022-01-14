@@ -19,12 +19,12 @@ if [ "$drupalfiles" != "" ]
 then
     drupalfailed=0
     echo "Running Code Sniffer..."
-    $PHPCS_BIN --standard=Drupal --encoding=utf-8 -n -p $drupalfiles >/dev/null
+    $PHPCS_BIN --standard=./phpcs.xml --encoding=utf-8 -n -p $drupalfiles >/dev/null
     if [ $? != 0 ]
     then
-        $PHPCBF_BIN --standard=Drupal --encoding=utf-8 -n -p $drupalfiles >/dev/null
+        $PHPCBF_BIN --standard=./phpcs.xml --encoding=utf-8 -n -p $drupalfiles >/dev/null
         git add $drupalfiles
-        $PHPCS_BIN --standard=Drupal --encoding=utf-8 -n -p $drupalfiles
+        $PHPCS_BIN --standard=./phpcs.xml --encoding=utf-8 -n -p $drupalfiles
         if [ $? != 0 ]
         then
             drupalfailed=1

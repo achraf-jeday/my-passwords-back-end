@@ -23,3 +23,6 @@
 
 # Ignore .env files as they are personal
 /.env
+
+# Ignore phpcs.xml files because we commit phpcs.xml.dist file
+/phpcs.xml
