@@ -36,7 +36,7 @@ class PasswordAccessControlHandler extends EntityAccessControlHandler {
         break;
 
       case 'delete':
-        $access =  AccessResult::allowedIfHasPermission($account, 'delete any password entities');
+        $access = AccessResult::allowedIfHasPermission($account, 'delete any password entities');
         if (!$access->isAllowed() && $account->hasPermission('delete own password entities')) {
           $access = $access->orIf(AccessResult::allowedIf($account->id() == $entity->getOwnerId())->cachePerUser()->addCacheableDependency($entity));
         }
@@ -56,6 +56,5 @@ class PasswordAccessControlHandler extends EntityAccessControlHandler {
   protected function checkCreateAccess(AccountInterface $account, array $context, $entity_bundle = NULL) {
     return AccessResult::allowedIfHasPermission($account, 'add password entities');
   }
-
 
 }

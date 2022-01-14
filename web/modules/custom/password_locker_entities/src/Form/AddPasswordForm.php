@@ -78,8 +78,8 @@ class AddPasswordForm extends FormBase {
           ]
       ],
       '#ajax' => [
-          'wrapper' => 'my-form-wrapper-id',
-          'progress' => ['type' => 'none'],
+        'wrapper' => 'my-form-wrapper-id',
+        'progress' => ['type' => 'none'],
       ]
     ];
 
