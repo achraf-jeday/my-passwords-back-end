@@ -27,6 +27,7 @@
         "drupal/google_analytics": "^4.0",
         "drupal/hreflang": "^1.5",
         "drupal/jsonapi_extras": "^3.20",
+        "drupal/memcache_storage": "^2.0",
         "drupal/metatag": "^1.16",
         "drupal/paragraphs": "^1.12",
         "drupal/pathauto": "^1.8",
