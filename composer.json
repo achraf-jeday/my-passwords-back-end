@@ -51,7 +51,8 @@
             "composer/installers": true,
             "drupal/console-extend-plugin": true,
             "drupal/core-composer-scaffold": true,
-            "cweagans/composer-patches": true
+            "cweagans/composer-patches": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true
         },
         "process-timeout": 2000
     },
@@ -92,9 +93,6 @@
         },
         "enable-patching": true,
         "patches": {
-            "drupal/core": {
-                "User created via /user/register?_format=json get blocked": "https://www.drupal.org/files/issues/2019-10-24/drupal-3055807-user_registered-via-rest-get-blocked-7.patch"
-            },
             "drupal/rest_password": {
                 "Possible email enumeration vulnerability": "https://www.drupal.org/files/issues/2021-12-12/rest_password-3223629-4.patch"
             }
